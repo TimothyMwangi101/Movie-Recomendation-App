@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CharityApp",
-    "slug": "CharityApp",
+    "name": "MovieFinderApp",
+    "slug": "MovieFinderApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/react-logo.png",
