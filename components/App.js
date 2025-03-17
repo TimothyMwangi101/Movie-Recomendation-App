@@ -1,7 +1,9 @@
+import React, { StrictMode, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, Linking, Button } from 'react-native';
 import Styles from "./Styles.js";
-import API from "./ShowAPI.js";
+import MovieDisplay from "./ShowAPI.js";
+
 
 const Footer = () => {
   return (
@@ -13,17 +15,12 @@ const Footer = () => {
         <Button
           onPress={() => Linking.openURL('https://docs.movieofthenight.com/')}
           title="Movie Of The Night"
-          color="rgb(166, 77, 121) "
+          color="rgb(166, 77, 121)"
         />
         <Button
           onPress={() => Linking.openURL('https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability')}
           title="Rapid API"
           color="rgb(166, 77, 121)"
-        />
-        <Button 
-          
-          onPress={API}
-          title='Test API'
         />
       </View>
     </View>
@@ -32,10 +29,16 @@ const Footer = () => {
 
 export default function App() {
   return (
-    <View style={Styles.appStyles.container}>
-      <StatusBar style="auto" />
-      <Footer />
-    </View>
-    
+    <View>
+      <View>
+        <StrictMode>
+          <MovieDisplay />
+        </StrictMode>
+      </View>
+      <View style={Styles.appStyles.container}>
+        <StatusBar style="auto" />
+        <Footer />
+      </View>
+    </View>    
   );
 }

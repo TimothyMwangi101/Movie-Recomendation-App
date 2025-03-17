@@ -13,7 +13,7 @@ const Styles = {
         text: {
             fontSize: 14,
             color: 'white',
-        },
+        }
     }),
 
     indexStyles: StyleSheet.create({
@@ -29,9 +29,8 @@ const Styles = {
         subtitle: {
             fontSize: 36,
             color: 'white',
-        },
+        }
     })
 };
-
 
 export default Styles;
