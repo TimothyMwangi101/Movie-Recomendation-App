@@ -30,6 +30,12 @@ const Styles = {
             fontSize: 36,
             color: 'white',
         }
+    }),
+    textStyle: StyleSheet.create({
+        text: {
+            fontSize: 14,
+            color: 'white',
+        }
     })
 };
 
