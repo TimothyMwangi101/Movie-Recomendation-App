@@ -25,6 +25,42 @@ async function fetchShowAPI() {
     }
 }
 
+function MovieCard({ props }) {
+    const [showCards, setShowCards] = useState(false);
+
+    function toggleView() {
+        setShowCards(!showCards);
+    }
+    return (
+        <View>
+            <Button title={showCards ? "Hide Movie Cards" : "Show Movie Cards"} onPress={toggleView} color={"rgb(166, 77, 121)"} />
+                {
+                    showCards &&
+                    <View>
+                    {
+                        props.map((show, index) => (
+                            <View key={index}>
+                                <Image source={{uri: show.getPoster().image}} alt={`${show.getTitle()} Poster`}
+                                    style={{resizeMode: 'center', width: 500, height: 500}}
+                                />
+                                <Text>{show.getTitle()} - {show.getYear()}</Text>
+                                <Text>Ranked #{show.getRank()}</Text>
+                                <Text>Actors: {show.getActors()}</Text>
+                                <Button
+                                    title={`${show.getTitle()} on IMDB`}
+                                    onPress={() => Linking.openURL(`https://imdb.com/title/${show.getImdbId()}`)}
+                                    color={"rgb(166, 77, 121)"}
+                                    
+                                />
+                            </View>
+                        )) 
+                    }
+                </View>
+                }
+        </View>
+    );
+}
+
 
 
 export default function MovieDisplay() {
@@ -53,7 +89,6 @@ export default function MovieDisplay() {
             }
 
             SetShows(AllShows);
-            console.log(AllShows);
         } catch (error) {
             console.error(error);
         } finally {
@@ -67,9 +102,12 @@ export default function MovieDisplay() {
 
     return (
         <View>
-            <Image source={{ uri: Shows[0].getPoster().image }} alt={`${Shows[0].getTitle()} Poster`}
-                style={{ resizeMode: 'center', width: 500, height: 500 }}
-            />
+            {
+                Isloading ? <ActivityIndicator /> :
+                    (
+                        <MovieCard props={Shows} />  
+                    )
+            }
         </View>
     );
 }
