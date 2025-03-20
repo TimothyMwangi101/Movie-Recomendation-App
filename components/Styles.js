@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 const Styles = {
+    
     appStyles: StyleSheet.create({
         container: {
             borderRadius: 8,
@@ -13,14 +14,20 @@ const Styles = {
         text: {
             fontSize: 14,
             color: 'white',
+        },
+        body: {
+            maxWidth: 1000,
+            alignItems: 'center',
         }
     }),
 
     indexStyles: StyleSheet.create({
         container: {
             backgroundColor: 'rgb(26, 26, 29)',
-            color: 'white'
-        },
+            
+        }
+    }),
+    textStyle: StyleSheet.create({
         title: {
             fontSize: 60,
             fontWeight: 'bold',
@@ -29,14 +36,12 @@ const Styles = {
         subtitle: {
             fontSize: 36,
             color: 'white',
-        }
-    }),
-    textStyle: StyleSheet.create({
+        },
         text: {
             fontSize: 14,
             color: 'white',
         }
-    })
+    }),
 };
 
 export default Styles;
