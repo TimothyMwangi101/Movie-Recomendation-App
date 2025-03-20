@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, Image, View, Text, Button, Linking } from 'react-native';
+import { ActivityIndicator, Image, View, Text, Button, Linking, FlatList } from 'react-native';
 import axios from 'axios';
 import Show from "./Show.js";
 import Styles from './Styles.js';
@@ -11,7 +11,7 @@ async function fetchShowAPI() {
         method: 'GET',
         url: "https://imdb.iamidiotareyoutoo.com/search",
         params: {
-            q: "12",
+            q: "korra",
             tt: ""
         }
     };
@@ -25,38 +25,49 @@ async function fetchShowAPI() {
     }
 }
 
+function SearchShow() {
+    cosnt [Search, SetSearch] = useState("");
+    return(
+        <View>
+
+        </View>
+    );
+}
+
 function MovieCard({ props }) {
     const [showCards, setShowCards] = useState(false);
 
     function toggleView() {
         setShowCards(!showCards);
     }
+    // https://www.geeksforgeeks.org/react-native-flatlist-component/
+    const renderItem = ({ item }) => (
+        <View>
+            <Image
+                source={{ uri: item.getPoster().image }}
+                alt={`${item.getTitle()} Poster`}
+                style={{resizeMode: 'center', width: 500, height: 500}} 
+            />
+            <Text>{item.getTitle()} - {item.getYear()}</Text>
+            <Text>Ranked #{item.getRank()}</Text>
+            <Text>Actors: {item.getActors()}</Text>
+            <Button
+                title={`${item.getTitle()} on IMDB`}
+                onPress={() => Linking.openURL(`https://imdb.com/title/${item.getImdbId()}`)}
+                color={"rgb(166, 77, 121)"}
+            />
+        </View>
+    );
+
     return (
         <View>
             <Button title={showCards ? "Hide Movie Cards" : "Show Movie Cards"} onPress={toggleView} color={"rgb(166, 77, 121)"} />
-                {
-                    showCards &&
-                    <View>
-                    {
-                        props.map((show, index) => (
-                            <View key={index}>
-                                <Image source={{uri: show.getPoster().image}} alt={`${show.getTitle()} Poster`}
-                                    style={{resizeMode: 'center', width: 500, height: 500}}
-                                />
-                                <Text>{show.getTitle()} - {show.getYear()}</Text>
-                                <Text>Ranked #{show.getRank()}</Text>
-                                <Text>Actors: {show.getActors()}</Text>
-                                <Button
-                                    title={`${show.getTitle()} on IMDB`}
-                                    onPress={() => Linking.openURL(`https://imdb.com/title/${show.getImdbId()}`)}
-                                    color={"rgb(166, 77, 121)"}
-                                    
-                                />
-                            </View>
-                        )) 
-                    }
-                </View>
-                }
+            {showCards && (
+                <FlatList
+                    data={props}
+                    renderItem={renderItem}
+                />
+            )}
         </View>
     );
 }
