@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { ActivityIndicator, Image, View, Text, Button, Linking, FlatList } from 'react-native';
+import { ActivityIndicator, Image, View, Text, Button, Linking, FlatList, TextInput } from 'react-native';
 import axios from 'axios';
 import Show from "./Show.js";
 import Styles from './Styles.js';
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
-
-async function fetchShowAPI() {
+/**
+ * @author Timothy Mwangi
+ * StAuth10244: I Timothy Mwangi, 000937691 certify that this material is my original work. No other person's work has been used without due acknowledgement. I have not made my work available to anyone else.
+*/
+async function fetchShowAPI(show) {
     const options = {
         method: 'GET',
         url: "https://imdb.iamidiotareyoutoo.com/search",
         params: {
-            q: "korra",
+            q: show,
             tt: ""
         }
     };
@@ -25,32 +26,20 @@ async function fetchShowAPI() {
     }
 }
 
-function SearchShow() {
-    cosnt [Search, SetSearch] = useState("");
-    return(
-        <View>
-
-        </View>
-    );
-}
-
 function MovieCard({ props }) {
-    const [showCards, setShowCards] = useState(false);
-
-    function toggleView() {
-        setShowCards(!showCards);
-    }
     // https://www.geeksforgeeks.org/react-native-flatlist-component/
     const renderItem = ({ item }) => (
-        <View>
+        <View style={Styles.card.container}>
             <Image
                 source={{ uri: item.getPoster().image }}
                 alt={`${item.getTitle()} Poster`}
-                style={{resizeMode: 'center', width: 500, height: 500}} 
+                style={Styles.card.image}
             />
-            <Text>{item.getTitle()} - {item.getYear()}</Text>
-            <Text>Ranked #{item.getRank()}</Text>
-            <Text>Actors: {item.getActors()}</Text>
+            <View style={Styles.card.textContainer}>
+                <Text style={Styles.card.text}>{item.getTitle()} - {item.getYear()}</Text>
+                <Text style={Styles.card.text}>Ranked #{item.getRank()}</Text>
+                <Text style={Styles.card.text}>Actors: {item.getActors()}</Text>
+            </View>
             <Button
                 title={`${item.getTitle()} on IMDB`}
                 onPress={() => Linking.openURL(`https://imdb.com/title/${item.getImdbId()}`)}
@@ -60,27 +49,25 @@ function MovieCard({ props }) {
     );
 
     return (
-        <View>
-            <Button title={showCards ? "Hide Movie Cards" : "Show Movie Cards"} onPress={toggleView} color={"rgb(166, 77, 121)"} />
-            {showCards && (
-                <FlatList
-                    data={props}
-                    renderItem={renderItem}
-                />
-            )}
-        </View>
+        <>
+            <FlatList data={props} renderItem={renderItem} />
+        </>
     );
 }
-
-
 
 export default function MovieDisplay() {
     const [Shows, SetShows] = useState([]);
     const [Isloading, SetLoading] = useState(true);
+    const [Search, SetSearch] = useState("breaking bad");
+    const [showCards, setShowCards] = useState(false);
 
-    async function createShow() {
+    function toggleView() {
+        setShowCards(!showCards);
+    }
+
+    async function createShow(show) {
         try {
-            const fetchShows = await fetchShowAPI();
+            const fetchShows = await fetchShowAPI(show);
             const shows = fetchShows.description;
             const AllShows = [];
 
@@ -98,7 +85,6 @@ export default function MovieDisplay() {
                     new Show(show["#TITLE"], show["#YEAR"], show["#IMDB_ID"], show["#RANK"], show["#ACTORS"], poster)
                 );
             }
-
             SetShows(AllShows);
         } catch (error) {
             console.error(error);
@@ -108,17 +94,25 @@ export default function MovieDisplay() {
     }
 
     useEffect(() => {
-        createShow();
-    }, []);
+        createShow(Search);
+    }, [Search]);
 
     return (
-        <View>
-            {
-                Isloading ? <ActivityIndicator /> :
-                    (
-                        <MovieCard props={Shows} />  
-                    )
-            }
+        <View style={Styles.movieDisplay.container}>
+            <TextInput
+                style={Styles.movieDisplay.textInput}
+                placeholder="Type a movie/show name"
+                onChangeText={newText => SetSearch(newText)}
+
+            />
+            <View style={{ width: "30vw", minWidth: 200, paddingBlock: 5 }}>
+                <Button
+                    title={showCards ? "Hide Movie Cards" : "Show Movie Cards"}
+                    onPress={toggleView}
+                    color={"rgb(166, 77, 121)"}
+                />
+            </View>
+            {(Isloading) ? <ActivityIndicator /> : (showCards) ? <MovieCard props={Shows} /> : null}
         </View>
     );
 }
